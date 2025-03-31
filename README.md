@@ -2,6 +2,8 @@
 
 A Flask-based web application for managing caregiver schedules and shifts using a file-based storage system.
 
+> **Note:** This branch contains the migration from SQLite to JSON-based storage for improved portability and easier data management.
+
 ## Features
 
 - Calendar view of weekly schedules

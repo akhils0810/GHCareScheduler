@@ -47,17 +47,18 @@ def hourly_view():
         start_date = today - timedelta(days=today.weekday())  # Start from Monday
         dates = list(rrule(DAILY, count=7, dtstart=start_date))
         
+        # Get all shifts for the week
         shifts = Shift.query.filter(
             Shift.date >= start_date,
             Shift.date < start_date + timedelta(days=7)
-        ).order_by(Shift.date, Shift.shift_type).all()
+        ).join(Caregiver).order_by(Shift.date, Shift.shift_type).all()
         
         logger.debug(f"Found {len(shifts)} shifts for the week")
         return render_template('hourly.html', dates=dates, shifts=shifts)
     except Exception as e:
         error_traceback = traceback.format_exc()
         logger.error(f"Error in hourly view: {e}\nTraceback:\n{error_traceback}")
-        raise
+        return render_template('error.html', error=str(e)), 500
 
 @views.route('/caregivers')
 def caregiver_view():
@@ -228,3 +229,24 @@ def delete_caregiver(caregiver_id):
         db.session.rollback()
         logger.error(f"Error deleting caregiver: {e}")
         return jsonify({'success': False, 'message': str(e)}), 500
+
+@views.route('/grant')
+def grant_view():
+    try:
+        logger.debug("Processing grant view request")
+        today = datetime.now().date()
+        start_date = today - timedelta(days=today.weekday())  # Start from Monday
+        dates = list(rrule(DAILY, count=7, dtstart=start_date))
+        
+        # Get all shifts for the week with caregiver information
+        shifts = Shift.query.filter(
+            Shift.date >= start_date,
+            Shift.date < start_date + timedelta(days=7)
+        ).join(Caregiver).order_by(Shift.date, Shift.shift_type).all()
+        
+        logger.debug(f"Found {len(shifts)} shifts for the week")
+        return render_template('grant.html', dates=dates, shifts=shifts)
+    except Exception as e:
+        error_traceback = traceback.format_exc()
+        logger.error(f"Error in grant view: {e}\nTraceback:\n{error_traceback}")
+        return render_template('error.html', error=str(e)), 500

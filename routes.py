@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify
 from datetime import datetime, timedelta
 from dateutil.rrule import rrule, DAILY
-from models import Caregiver, Shift
+from .models import Caregiver, Shift
 from config import ShiftConfig
 import logging
 import traceback

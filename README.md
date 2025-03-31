@@ -36,6 +36,25 @@ python app.py
 
 The application will be available at `http://localhost:5000`
 
+## Deployment on Render
+
+1. Create a new account on [Render](https://render.com) if you don't have one
+2. Click "New +" and select "Web Service"
+3. Connect your GitHub repository
+4. Configure the service:
+   - Name: `gh-scheduler` (or your preferred name)
+   - Environment: `Python 3`
+   - Build Command: `pip install -r requirements.txt`
+   - Start Command: `gunicorn wsgi:app`
+   - Add the following environment variables:
+     - `FLASK_ENV=production`
+     - `SECRET_KEY=your-secret-key-here`
+     - `DATABASE_URL=your-postgresql-url` (Render will provide this automatically)
+
+5. Click "Create Web Service"
+
+The application will be deployed and available at `https://your-app-name.onrender.com`
+
 ## Project Structure
 
 - `app.py`: Main application file
@@ -44,6 +63,8 @@ The application will be available at `http://localhost:5000`
 - `config.py`: Configuration settings
 - `templates/`: HTML templates
 - `static/`: Static files (CSS, JS)
+- `wsgi.py`: WSGI entry point for production
+- `Procfile`: Process file for Render deployment
 
 ## Contributing
 

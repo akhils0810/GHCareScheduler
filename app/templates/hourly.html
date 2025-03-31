@@ -8,43 +8,78 @@
         margin-top: 20px;
         background-color: white;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        font-size: 0.9em;
     }
     .hourly-grid th, .hourly-grid td {
         border: 1px solid #ddd;
         padding: 8px;
-        text-align: center;
-        vertical-align: middle;
+        text-align: left;
+        vertical-align: top;
+        position: relative;
     }
     .hourly-grid th {
         background-color: #333;
         color: white;
+        text-align: center;
+        font-weight: 500;
+        position: sticky;
+        top: 0;
+        z-index: 10;
     }
     .time-slot {
-        font-weight: bold;
+        font-weight: 500;
         background-color: #f8f9fa;
+        width: 120px;
+        white-space: nowrap;
+        position: sticky;
+        left: 0;
+        z-index: 5;
     }
-    .shift-A { background-color: #90EE90; }
-    .shift-B { background-color: #87CEEB; }
-    .shift-C { background-color: #DDA0DD; }
-    .shift-G1 { background-color: #F0E68C; }
-    .shift-G2 { background-color: #FFB6C1; }
-    .shift-A, .shift-B, .shift-C, .shift-G1, .shift-G2 {
-        padding: 4px 8px;
-        border-radius: 4px;
+    .shift-entry {
+        display: flex;
+        align-items: center;
+        gap: 6px;
         margin: 2px 0;
-        display: inline-block;
     }
-    .legend {
-        margin: 20px 0;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
+    .shift-type {
+        font-weight: bold;
+        min-width: 20px;
+        padding: 2px 6px;
+        border-radius: 3px;
+        color: white;
+        text-align: center;
     }
-    .legend-item {
-        display: inline-block;
-        margin: 5px;
-        padding: 5px 10px;
+    .shift-A { background-color: #4CAF50; }
+    .shift-B { background-color: #2196F3; }
+    .shift-C { background-color: #9C27B0; }
+    .shift-G1 { background-color: #FF9800; }
+    .shift-G2 { background-color: #F44336; }
+    
+    .caregiver-name {
+        font-size: 0.95em;
+    }
+    .caregiver-Amanda { color: #d32f2f; }
+    .caregiver-Kisha { color: #1976d2; }
+    .caregiver-Fatima { color: #388e3c; }
+    .caregiver-MariaB { color: #7b1fa2; }
+    .caregiver-MariahG { color: #00796b; }
+    .caregiver-Michelle { color: #283593; }
+
+    .shift-header {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+        padding: 15px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .shift-type-label {
+        padding: 6px 12px;
         border-radius: 4px;
+        background-color: #f8f9fa;
+        font-size: 0.9em;
     }
 </style>
 {% endblock %}
@@ -52,13 +87,13 @@
 {% block content %}
 <h1>Hourly Schedule</h1>
 
-<div class="legend">
+<div class="shift-header">
     <h3>Shift Times:</h3>
-    <span class="shift-A">A Shift (6AM-2PM)</span>
-    <span class="shift-G2">G2 Shift (9AM-5PM)</span>
-    <span class="shift-G1">G1 Shift (12PM-8PM)</span>
-    <span class="shift-B">B Shift (4PM-12AM)</span>
-    <span class="shift-C">C Shift (12AM-8AM)</span>
+    <div class="shift-type-label">A Shift (6AM-2PM)</div>
+    <div class="shift-type-label">G2 Shift (9AM-5PM)</div>
+    <div class="shift-type-label">G1 Shift (12PM-8PM)</div>
+    <div class="shift-type-label">B Shift (4PM-12AM)</div>
+    <div class="shift-type-label">C Shift (12AM-8AM)</div>
 </div>
 
 <table class="hourly-grid">
@@ -93,8 +128,11 @@
                                   (shift.shift_type == 'G1' and hour >= 12 and hour < 20) or
                                   (shift.shift_type == 'B' and hour >= 16 and hour < 24) or
                                   (shift.shift_type == 'C' and hour >= 0 and hour < 8) %}
-                                <div class="shift-{{ shift.shift_type }}">
-                                    {{ shift.caregiver.name }}
+                                <div class="shift-entry">
+                                    <span class="shift-type shift-{{ shift.shift_type }}">{{ shift.shift_type }}</span>
+                                    <span class="caregiver-name caregiver-{{ shift.caregiver.name|replace(' ', '') }}">
+                                        {{ shift.caregiver.name }}
+                                    </span>
                                 </div>
                             {% endif %}
                         {% endif %}

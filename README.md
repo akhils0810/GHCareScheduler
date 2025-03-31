@@ -1,6 +1,6 @@
 # GH Scheduler
 
-A Flask-based web application for managing caregiver schedules and shifts.
+A Flask-based web application for managing caregiver schedules and shifts using a file-based storage system.
 
 ## Features
 
@@ -9,6 +9,7 @@ A Flask-based web application for managing caregiver schedules and shifts.
 - Caregiver management
 - Shift assignment and removal
 - Error handling and logging
+- JSON-based data storage for easy portability
 
 ## Setup
 
@@ -36,6 +37,15 @@ python app.py
 
 The application will be available at `http://localhost:5000`
 
+## Data Storage
+
+The application uses a file-based storage system with JSON files:
+
+- `data/caregivers.json`: Stores caregiver information
+- `data/shifts.json`: Stores shift assignments and schedules
+
+The data directory is automatically created when the application starts. You can backup your data by simply copying these JSON files.
+
 ## Deployment on Render
 
 1. Create a new account on [Render](https://render.com) if you don't have one
@@ -49,7 +59,7 @@ The application will be available at `http://localhost:5000`
    - Add the following environment variables:
      - `FLASK_ENV=production`
      - `SECRET_KEY=your-secret-key-here`
-     - `DATABASE_URL=your-postgresql-url` (Render will provide this automatically)
+     - `DATA_DIR=/data` (Optional: custom directory for JSON files)
 
 5. Click "Create Web Service"
 
@@ -58,13 +68,27 @@ The application will be deployed and available at `https://your-app-name.onrende
 ## Project Structure
 
 - `app.py`: Main application file
-- `models.py`: Database models
+- `models.py`: Data models and business logic
+- `data_manager.py`: JSON file storage management
 - `routes.py`: Route handlers
 - `config.py`: Configuration settings
 - `templates/`: HTML templates
 - `static/`: Static files (CSS, JS)
 - `wsgi.py`: WSGI entry point for production
 - `Procfile`: Process file for Render deployment
+- `data/`: Directory containing JSON data files
+
+## Data Migration
+
+If you're migrating from the old SQLite version:
+
+1. Ensure your old database (`schedule.db`) is in the root directory
+2. Run the migration script:
+```bash
+python migrate_data.py
+```
+
+This will convert all your existing data to the new JSON format.
 
 ## Contributing
 

@@ -1,7 +1,7 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 import os
 import logging
+from .data_manager import DataManager
 
 # Configure logging
 logging.basicConfig(
@@ -9,9 +9,6 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
-
-# Initialize SQLAlchemy
-db = SQLAlchemy()
 
 def create_app():
     try:
@@ -22,25 +19,12 @@ def create_app():
         from .config import Config
         app.config.from_object(Config)
         
-        # Initialize database
-        db.init_app(app)
-        
-        # Import models here to avoid circular imports
-        from .models import Caregiver, Shift
-        
+        # Initialize data
         with app.app_context():
-            logger.debug("Creating database tables...")
-            db.create_all()
-            
-            # Initialize caregivers if none exist
-            if Caregiver.query.count() == 0:
-                logger.debug("Initializing caregivers...")
-                from .config import ShiftConfig
-                for name in ShiftConfig.CAREGIVERS:
-                    caregiver = Caregiver(name=name)
-                    db.session.add(caregiver)
-                db.session.commit()
-                logger.debug(f"Added {len(ShiftConfig.CAREGIVERS)} caregivers")
+            logger.debug("Initializing data storage...")
+            from .models import init_data
+            init_data()
+            logger.debug("Data storage initialized")
         
         # Register blueprints
         from .routes import views

@@ -271,7 +271,7 @@ function showAlert(type, message) {
         <tbody>
             {% for date in week_dates %}
             <tr>
-                <th>{{ date.strftime('%A') }}<br>{{ date.strftime('%Y-%m-%d') }}</th>
+                <th>{{ date.strftime('%A') }}</th>
                 {% for caregiver in caregivers %}
                     <td>
                         {% set ns = namespace(has_shift=false) %}
